@@ -1,0 +1,32 @@
+# 게임 원본·산출물 (배포하지 않음)
+*.iso
+*.rvz
+*.xdelta
+ext/
+tex/
+fzmain.rel
+shots/
+dolphin_user/
+
+# 일본어 원문 (prepare.py가 사용자 원본 디스크에서 다시 만듦)
+text/jp/
+text/strings_raw.json
+text/strings_f.json
+text/fontchars.txt
+
+# 글꼴·외부 실행 파일·이미지
+*.ttf
+*.otf
+*.exe
+*.dll
+*.png
+fonts/
+
+# 빌드 기록·임시
+report.txt
+build.log
+dsu.log
+hash.txt
+old.md5
+__pycache__/
+*.pyc
