@@ -74,9 +74,44 @@ def _dcmpr(raw, W, H):
                         out[by + sy + i // 4, bx + sx + i % 4] = pal[(bits >> (30 - 2 * i)) & 3]
     return out
 
+
+def _ecmpr(img, W, H):
+    """Simple CMPR encoder: per 4x4 block, 3-colour+transparent mode (c0<=c1) when any pixel has alpha<128."""
+    full = np.zeros((H, W, 4), np.uint8); full[:img.shape[0], :img.shape[1]] = img
+    out = bytearray()
+    def q(c): c = np.clip(c, 0, 255).astype(int); return (c[0] * 31 // 255) << 11 | (c[1] * 63 // 255) << 5 | c[2] * 31 // 255
+    for by in range(0, H, 8):
+        for bx in range(0, W, 8):
+            for sy in (0, 4):
+                for sx in (0, 4):
+                    b = full[by + sy:by + sy + 4, bx + sx:bx + sx + 4].reshape(16, 4).astype(int)
+                    op = b[:, 3] >= 128
+                    if not op.any(): out += bytes(4) + bytes([255] * 4); continue
+                    cs = b[op, :3]; lum = cs.sum(1)
+                    lo, hi = cs[lum.argmin()], cs[lum.argmax()]
+                    c0, c1 = q(lo), q(hi)
+                    trans = not op.all()
+                    if trans or c0 == c1:
+                        if c0 > c1: c0, c1 = c1, c0
+                        p0 = _c565(np.array(c0)).astype(int); p1 = _c565(np.array(c1)).astype(int)
+                        pal = [p0, p1, (p0 + p1) // 2]
+                    else:
+                        if c0 < c1: c0, c1 = c1, c0
+                        p0 = _c565(np.array(c0)).astype(int); p1 = _c565(np.array(c1)).astype(int)
+                        pal = [p0, p1, (2 * p0 + p1) // 3, (p0 + 2 * p1) // 3]
+                    bits = 0
+                    for i in range(16):
+                        if not op[i] and (trans or c0 <= c1): idx = 3
+                        else: idx = int(np.argmin([((b[i, :3] - pc) ** 2).sum() for pc in pal]))
+                        bits |= idx << (30 - 2 * i)
+                    out += struct.pack('>HHI', c0, c1, bits)
+    return bytes(out)
+
 def encode(img, e):
-    """img: (h,w,4) uint8 RGBA -> bytes for fmt (no CMPR)"""
-    f = e['fmt']; bw, bh, bpp = BLK[f]
+    """img: (h,w,4) uint8 RGBA -> bytes for fmt"""
+    f = e['fmt']
+    if f == 14: return _ecmpr(img, -(-e['w'] // 8) * 8, -(-e['h'] // 8) * 8)
+    bw, bh, bpp = BLK[f]
     W = -(-e['w'] // bw) * bw; H = -(-e['h'] // bh) * bh
     full = np.zeros((H, W, 4), np.uint8); full[:e['h'], :e['w']] = img
     t = _tile(full, bw, bh).reshape(-1, 4).astype(np.int32)

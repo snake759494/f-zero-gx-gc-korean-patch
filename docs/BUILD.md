@@ -29,14 +29,14 @@ python tools/build.py
 
 - REL 문자열·인터뷰 대사·스토리 자막·일시정지 메뉴·이름 입력 표·글꼴·그림 글자를 바꾸고, 원본 ISO를 복사해 바뀐 파일을 다시 써 넣어 상위 폴더에 `F-Zero GX (Japan) [KOR].iso`를 만듭니다.
   - 출력 경로는 환경 변수 `OUT_ISO`로 바꿀 수 있습니다.
-- 칸 크기를 넘는 문장이 있으면 `report.txt`에 `OVER`로 나옵니다. v1.0은 0건입니다.
+- 칸 크기를 넘는 문장이 있으면 `report.txt`에 `OVER`로 나옵니다. v1.1은 0건입니다.
 - 텍스처 재압축 결과는 `tex/`에 캐시합니다. 처음 한 번은 몇 분 걸립니다.
 - 결과 ISO의 MD5가 `README.md` 표의 값과 같으면 배포판과 같습니다.
 
 ## 배포 파일 만들기
 
 ```powershell
-xdelta3 -e -0 -S none -A -s orig.iso '..\F-Zero GX (Japan) [KOR].iso' F-Zero_GX_GC_KO_v1.0.xdelta
+xdelta3 -e -0 -S none -A -s orig.iso '..\F-Zero GX (Japan) [KOR].iso' F-Zero_GX_GC_KO_v1.1.xdelta
 ```
 
 ## 테스트·분석 도구

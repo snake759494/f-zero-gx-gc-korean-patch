@@ -27,7 +27,7 @@ def load_tr():
         for ln in open(f, encoding='utf-8').read().split('\n'):
             if not ln.strip() or ln.startswith('#'): continue
             off, ko = ln.split('\t', 1)
-            ko = ko.replace('|', '\n')
+            ko = ko.replace('|', '\n').replace('\\t', '\t')
             if off.startswith('@'):  # location-only override
                 tr['%s:%s' % (name, off[1:])] = ko; continue
             jp = byoff[int(off, 16)]

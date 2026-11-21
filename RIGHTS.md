@@ -24,6 +24,7 @@
 
 게임 안 한글을 그린 글꼴은 다음과 같습니다. 글꼴 파일 자체는 저장소에 넣지 않았습니다(`docs/FONT_CREDITS.md` 참고).
 - 나눔스퀘어네오(네이버)
+- 서울한강체(서울특별시)
 - 갈무리(SIL Open Font License 1.1, 전문은 `LICENSES/`에 보존)
 
 xdelta, Dolphin, Python 라이브러리(numpy, Pillow, OpenCV, capstone) 등 외부 도구는 각 프로젝트의 라이선스를 따르며, 바이너리는 재배포하지 않습니다. 게임 코드를 디스어셈블한 결과물은 넣지 않았고, 해석한 내용만 `docs/TECHNICAL.md`에 정리했습니다.
